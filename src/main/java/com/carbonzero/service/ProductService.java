@@ -16,6 +16,4 @@ public interface ProductService {
     Product updateProduct();
 
     Product deleteProduct(Long id);
-
-    Product findProduct(Long id);
 }

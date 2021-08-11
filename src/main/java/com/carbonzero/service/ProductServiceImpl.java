@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.carbonzero.domain.Product;
 import com.carbonzero.dto.ProductRequestData;
+import com.carbonzero.error.ProductNotFoundException;
 import com.carbonzero.repository.ProductRepository;
 import com.github.dozermapper.core.Mapper;
 
@@ -22,12 +23,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getProducts() {
-        return null;
+        return productRepository.findAll();
     }
 
     @Override
     public Product getProduct(Long id) {
-        return null;
+        return findProduct(id);
     }
 
     @Override
@@ -48,8 +49,8 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
-    @Override
     public Product findProduct(Long id) {
-        return null;
+        return productRepository.findById(id)
+            .orElseThrow(() -> new ProductNotFoundException(id));
     }
 }
