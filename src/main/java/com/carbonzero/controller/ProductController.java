@@ -31,6 +31,11 @@ public class ProductController {
         this.productServiceImpl = productServiceImpl;
     }
 
+    /**
+     * 상품 생성을 요청한다.
+     * @param productRequestData
+     * @return 생성된 상품 정보
+     */
     @PostMapping
     public ResponseEntity<Product> create(@RequestBody @Valid ProductRequestData productRequestData) {
         Product savedProduct = productServiceImpl.createProduct(productRequestData);
@@ -49,6 +54,10 @@ public class ProductController {
             .body(savedProduct);
     }
 
+    /**
+     * 상품 목록 조회를 요청한다.
+     * @return 상품 리스트
+     */
     @GetMapping
     public ResponseEntity<List<Product>> list() {
         List<Product> products = productServiceImpl.getProducts();
@@ -58,6 +67,11 @@ public class ProductController {
             .body(products);
     }
 
+    /**
+     * 특정 상품을 조회한다.
+     * @param id 상품 아이디
+     * @return
+     */
     @GetMapping("{id}")
     public ResponseEntity<Product> detail(@PathVariable Long id) {
         Product product = productServiceImpl.getProduct(id);

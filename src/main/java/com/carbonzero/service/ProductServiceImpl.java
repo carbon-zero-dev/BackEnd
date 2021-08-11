@@ -21,22 +21,36 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
-    @Override
-    public List<Product> getProducts() {
-        return productRepository.findAll();
-    }
-
-    @Override
-    public Product getProduct(Long id) {
-        return findProduct(id);
-    }
-
+    /**
+     * 상품을 생성한다.
+     * @param productRequestData
+     * @return 생성된 상품
+     */
     @Override
     public Product createProduct(ProductRequestData productRequestData) {
 
         Product product = mapper.map(productRequestData, Product.class);
 
         return productRepository.save(product);
+    }
+
+    /**
+     * 상품 목록을 반환한다.
+     * @return 상품 목록
+     */
+    @Override
+    public List<Product> getProducts() {
+        return productRepository.findAll();
+    }
+
+    /**
+     * 특정 상품을 반환한다.
+     * @param id 상품 아이디
+     * @return 조회할 상품
+     */
+    @Override
+    public Product getProduct(Long id) {
+        return findProduct(id);
     }
 
     @Override
@@ -49,6 +63,11 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
+    /**
+     * 특정한 상품을 조회하여 존재한다면 반환한다.
+     * @param id 검색할 상품 아이디
+     * @return 상품
+     */
     public Product findProduct(Long id) {
         return productRepository.findById(id)
             .orElseThrow(() -> new ProductNotFoundException(id));
