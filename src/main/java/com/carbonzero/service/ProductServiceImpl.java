@@ -5,32 +5,25 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.carbonzero.domain.Product;
-import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.error.ProductNotFoundException;
 import com.carbonzero.repository.ProductRepository;
-import com.github.dozermapper.core.Mapper;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final Mapper mapper;
     private final ProductRepository productRepository;
 
-    public ProductServiceImpl(Mapper dozerMapper, ProductRepository productRepository) {
-        this.mapper = dozerMapper;
+    public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     /**
      * 상품을 생성한다.
-     * @param productRequestData
+     * @param product
      * @return 생성된 상품
      */
     @Override
-    public Product createProduct(ProductRequestData productRequestData) {
-
-        Product product = mapper.map(productRequestData, Product.class);
-
+    public Product createProduct(Product product) {
         return productRepository.save(product);
     }
 
