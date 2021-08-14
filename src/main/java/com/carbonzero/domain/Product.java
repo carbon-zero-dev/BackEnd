@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Product extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +36,9 @@ public class Product {
     private Long price;
 
     private String description;
+
+    @Builder.Default
+    private Boolean isActive = true;
 
     @ElementCollection
     private List<String> imageLink;
