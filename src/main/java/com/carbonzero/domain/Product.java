@@ -16,7 +16,6 @@ import lombok.*;
 @Table(name = "PRODUCT")
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product extends BaseTime {
@@ -46,4 +45,16 @@ public class Product extends BaseTime {
     private Boolean isEcoFriendly;
 
     private Integer carbonEmissions;
+
+    public void changeWith(Product source) {
+        this.name = source.name;
+        this.brand = source.brand;
+        this.price = source.price;
+        this.description = source.description;
+        this.isActive = source.isActive;
+        this.imageLink = source.imageLink;
+        this.category = source.category;
+        this.isEcoFriendly = source.isEcoFriendly;
+        this.carbonEmissions = source.carbonEmissions;
+    }
 }

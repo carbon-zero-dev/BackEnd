@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.carbonzero.domain.Product;
 import com.carbonzero.error.ProductNotFoundException;
 import com.carbonzero.repository.ProductRepository;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -55,29 +57,10 @@ public class ProductServiceImpl implements ProductService {
       * @return int
      */
     @Override
-    public Product updateProduct(Long id, Product product) {
-        Optional<Product> productToChange = productRepository.findById(id);
-        if(productToChange.isPresent()) {
-            Product selectedProduct = productToChange.get();
-            if(StringUtils.isNotEmpty(product.getName()))
-                selectedProduct.setName(product.getName());
-            if(StringUtils.isNotEmpty(product.getBrand()))
-                selectedProduct.setBrand(product.getBrand());
-            if(StringUtils.isNotEmpty(Long.toString(product.getPrice())))
-                selectedProduct.setPrice(product.getPrice());
-            if(StringUtils.isNotEmpty(product.getDescription()))
-                selectedProduct.setDescription(product.getDescription());
-            if((product.getImageLink()).isEmpty())
-                selectedProduct.setImageLink(product.getImageLink());
-            if(StringUtils.isNotEmpty(product.getCategory()))
-                selectedProduct.setCategory(product.getCategory());
-            if(StringUtils.isNotEmpty(product.getCategory()))
-                selectedProduct.setCategory(product.getCategory());
-            if(StringUtils.isNotEmpty(product.getCategory()))
-                selectedProduct.setCategory(product.getCategory());
-            productRepository.save(selectedProduct);
-        }
-        return findProduct(id);
+    public Product updateProduct(Long id, Product source) {
+        Product selectedProduct = findProduct(id);
+        selectedProduct.changeWith(source);
+        return selectedProduct;
     }
 
     /**
@@ -86,7 +69,8 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+        Product product = findProduct(id);
+        productRepository.delete(product);
     }
 
     /**
