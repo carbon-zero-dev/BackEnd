@@ -1,7 +1,10 @@
 package com.carbonzero.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.carbonzero.dto.ProductRequestData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.carbonzero.domain.Product;
@@ -46,14 +49,44 @@ public class ProductServiceImpl implements ProductService {
         return findProduct(id);
     }
 
+     /**
+      *  상품을 업데이트한다.
+      * @param id,productRequestData
+      * @return int
+     */
     @Override
-    public Product updateProduct() {
-        return null;
+    public Product updateProduct(Long id, Product product) {
+        Optional<Product> productToChange = productRepository.findById(id);
+        if(productToChange.isPresent()) {
+            Product selectedProduct = productToChange.get();
+            if(StringUtils.isNotEmpty(product.getName()))
+                selectedProduct.setName(product.getName());
+            if(StringUtils.isNotEmpty(product.getBrand()))
+                selectedProduct.setBrand(product.getBrand());
+            if(StringUtils.isNotEmpty(Long.toString(product.getPrice())))
+                selectedProduct.setPrice(product.getPrice());
+            if(StringUtils.isNotEmpty(product.getDescription()))
+                selectedProduct.setDescription(product.getDescription());
+            if((product.getImageLink()).isEmpty())
+                selectedProduct.setImageLink(product.getImageLink());
+            if(StringUtils.isNotEmpty(product.getCategory()))
+                selectedProduct.setCategory(product.getCategory());
+            if(StringUtils.isNotEmpty(product.getCategory()))
+                selectedProduct.setCategory(product.getCategory());
+            if(StringUtils.isNotEmpty(product.getCategory()))
+                selectedProduct.setCategory(product.getCategory());
+            productRepository.save(selectedProduct);
+        }
+        return findProduct(id);
     }
 
+    /**
+     * 상품을 삭제한다.
+     * @param id 삭제할 상품의 아이디
+     */
     @Override
-    public Product deleteProduct(Long id) {
-        return null;
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
     }
 
     /**

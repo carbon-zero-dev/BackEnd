@@ -8,8 +8,10 @@ import javax.validation.constraints.NotNull;
 import com.github.dozermapper.core.Mapping;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ProductRequestData {
     @NotBlank
     @Mapping("name")

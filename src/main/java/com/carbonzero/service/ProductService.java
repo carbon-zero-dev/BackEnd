@@ -3,6 +3,7 @@ package com.carbonzero.service;
 import java.util.List;
 
 import com.carbonzero.domain.Product;
+import com.carbonzero.dto.ProductRequestData;
 
 public interface ProductService {
 
@@ -12,7 +13,7 @@ public interface ProductService {
 
     Product createProduct(Product product);
 
-    Product updateProduct();
+    Product updateProduct(Long id, Product product);
 
-    Product deleteProduct(Long id);
+    void deleteProduct(Long id);
 }
