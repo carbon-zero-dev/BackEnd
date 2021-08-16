@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.carbonzero.dto.ProductSearchRequest;
+import com.carbonzero.service.ProductSearchService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,10 +32,12 @@ public class ProductController {
 
     private final Mapper mapper;
     private final ProductServiceImpl productServiceImpl;
+    private final ProductSearchService productSearchService;
 
-    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl) {
+    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl, ProductSearchService productSearchService) {
         this.mapper = mapper;
         this.productServiceImpl = productServiceImpl;
+        this.productSearchService = productSearchService;
     }
 
     /**
@@ -95,5 +99,15 @@ public class ProductController {
         return ResponseEntity
             .ok()
             .body(response);
+    }
+
+    /**
+     * 상품 검색
+     * @param productSearchRequest
+     * @return
+     */
+    @PostMapping("/search")
+    public ResponseEntity<?> search(@RequestBody ProductSearchRequest productSearchRequest){
+        return ResponseEntity.ok().body(productSearchService.search(productSearchRequest));
     }
 }
