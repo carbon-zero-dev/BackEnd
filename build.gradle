@@ -79,3 +79,15 @@ application {
 test {
 	useJUnitPlatform()
 }
+
+bootBuildImage {
+    builder = 'paketobuildpacks/builder:tiny'
+    environment = ['BP_NATIVE_IMAGE': 'true']
+}
+
+
+bootJar{
+    archivesBaseName = 'carbon-zero-api'
+    archiveFileName = 'carbon-zero-api-staging.jar'
+    archiveVersion = "0.0.0"
+}
