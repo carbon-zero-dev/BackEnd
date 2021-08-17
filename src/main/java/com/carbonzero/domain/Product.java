@@ -1,6 +1,9 @@
 package com.carbonzero.domain;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -9,11 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.List;
 
 @Entity
 @Table(name = "PRODUCT")
@@ -48,4 +47,16 @@ public class Product extends BaseTime {
     private Boolean isEcoFriendly;
 
     private Integer carbonEmissions;
+
+    public void changeWith(Product source) {
+        this.name = source.name;
+        this.brand = source.brand;
+        this.price = source.price;
+        this.description = source.description;
+        this.isActive = source.isActive;
+        this.imageLink = source.imageLink;
+        this.category = source.category;
+        this.isEcoFriendly = source.isEcoFriendly;
+        this.carbonEmissions = source.carbonEmissions;
+    }
 }
