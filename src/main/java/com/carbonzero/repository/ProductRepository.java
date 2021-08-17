@@ -1,9 +1,8 @@
 package com.carbonzero.repository;
 
+import com.carbonzero.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import com.carbonzero.domain.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {

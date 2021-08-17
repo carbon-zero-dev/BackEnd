@@ -1,14 +1,10 @@
 package com.carbonzero.dto;
 
+import com.github.dozermapper.core.Mapping;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 import java.util.List;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import com.github.dozermapper.core.Mapping;
-
-import lombok.Getter;
 
 @Getter
 public class ProductResponseData {
