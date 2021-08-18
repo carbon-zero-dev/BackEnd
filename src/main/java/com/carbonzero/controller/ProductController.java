@@ -1,10 +1,13 @@
 package com.carbonzero.controller;
 
-import com.carbonzero.domain.Product;
-import com.carbonzero.dto.ProductRequestData;
-import com.carbonzero.dto.ProductResponseData;
-import com.carbonzero.service.ProductServiceImpl;
-import com.github.dozermapper.core.Mapper;
+import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +19,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.carbonzero.domain.Product;
+import com.carbonzero.dto.ProductRequestData;
+import com.carbonzero.dto.ProductResponseData;
+import com.carbonzero.service.ProductServiceImpl;
+import com.github.dozermapper.core.Mapper;
 
 @RestController
 @RequestMapping("/products")
@@ -70,8 +75,16 @@ public class ProductController {
      * @return 상품 리스트
      */
     @GetMapping
-    public ResponseEntity<List<ProductResponseData>> list() {
-        List<Product> products = productServiceImpl.getProducts();
+    public ResponseEntity<List<ProductResponseData>> list(
+        @RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
+        @RequestParam(value = "size", defaultValue = "20", required = false) Integer size,
+        @RequestParam(value = "sortby", defaultValue = "createAt", required = false) String sortBy) {
+
+        List<Product> products = productServiceImpl.getProducts(
+            PageRequest.of(page,
+                size,
+                Sort.Direction.DESC,
+                sortBy.split(",")));
 
         List<ProductResponseData> response = products.stream()
             .map(product -> mapper.map(product, ProductResponseData.class))
