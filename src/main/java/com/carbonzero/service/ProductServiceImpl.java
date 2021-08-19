@@ -1,13 +1,14 @@
 package com.carbonzero.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.carbonzero.domain.Product;
 import com.carbonzero.error.ProductNotFoundException;
 import com.carbonzero.repository.ProductRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+@Transactional
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -46,14 +47,26 @@ public class ProductServiceImpl implements ProductService {
         return findProduct(id);
     }
 
+    /**
+     *  상품을 업데이트한다.
+     * @param id,productRequestData
+     * @return int
+     */
     @Override
-    public Product updateProduct() {
-        return null;
+    public Product updateProduct(Long id, Product source) {
+        Product selectedProduct = findProduct(id);
+        selectedProduct.changeWith(source);
+        return selectedProduct;
     }
 
+    /**
+     * 상품을 삭제한다.
+     * @param id 삭제할 상품의 아이디
+     */
     @Override
-    public Product deleteProduct(Long id) {
-        return null;
+    public void deleteProduct(Long id) {
+        Product product = findProduct(id);
+        productRepository.delete(product);
     }
 
     /**

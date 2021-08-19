@@ -4,6 +4,7 @@ import com.carbonzero.domain.Product;
 import com.github.dozermapper.core.Mapping;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import com.github.dozermapper.core.Mapping;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Getter @Builder @Setter
 @NoArgsConstructor @AllArgsConstructor
+@Getter
 public class ProductResponseData {
 
     @Mapping("id")
