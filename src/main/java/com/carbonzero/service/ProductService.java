@@ -1,14 +1,14 @@
 package com.carbonzero.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import com.carbonzero.domain.Product;
+import com.carbonzero.dto.ProductResponseData;
 
 public interface ProductService {
 
-    List<Product> getProducts(PageRequest pageRequest);
+    Page<ProductResponseData> getProducts(PageRequest pageRequest);
 
     Product getProduct(Long id);
 

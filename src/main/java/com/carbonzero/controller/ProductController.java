@@ -1,11 +1,13 @@
 package com.carbonzero.controller;
 
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +36,13 @@ public class ProductController {
 
     private final Mapper mapper;
     private final ProductServiceImpl productServiceImpl;
+    private final PagedResourcesAssembler<ProductResponseData> assembler;
 
-    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl) {
+    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl,
+        PagedResourcesAssembler<ProductResponseData> assembler) {
         this.mapper = mapper;
         this.productServiceImpl = productServiceImpl;
+        this.assembler = assembler;
     }
 
     /**
@@ -73,19 +78,18 @@ public class ProductController {
      * @return 상품 리스트
      */
     @GetMapping
-    public ResponseEntity<List<ProductResponseData>> list(
+    public ResponseEntity<PagedModel<EntityModel<ProductResponseData>>> list(
         @Valid PageRequestData pageRequestData) {
 
-        List<Product> products = productServiceImpl.
+        Page<ProductResponseData> products = productServiceImpl.
             getProducts(pageRequestData.convertToPageRequest());
 
-        List<ProductResponseData> response = products.stream()
-            .map(product -> mapper.map(product, ProductResponseData.class))
-            .collect(Collectors.toList());
+        // HATEOAS
+        PagedModel<EntityModel<ProductResponseData>> entityModels = assembler.toModel(products);
 
         return ResponseEntity
             .ok()
-            .body(response);
+            .body(entityModels);
     }
 
     /**

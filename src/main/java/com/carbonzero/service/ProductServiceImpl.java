@@ -1,22 +1,25 @@
 package com.carbonzero.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.carbonzero.domain.Product;
+import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.error.ProductNotFoundException;
 import com.carbonzero.repository.ProductRepository;
+import com.github.dozermapper.core.Mapper;
 
 @Transactional
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private final Mapper mapper;
     private final ProductRepository productRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(Mapper mapper, ProductRepository productRepository) {
+        this.mapper = mapper;
         this.productRepository = productRepository;
     }
 
@@ -35,8 +38,10 @@ public class ProductServiceImpl implements ProductService {
      * @return 상품 목록
      */
     @Override
-    public List<Product> getProducts(PageRequest pageRequest) {
-        return productRepository.findAll(pageRequest).getContent();
+    public Page<ProductResponseData> getProducts(PageRequest pageRequest) {
+        Page<Product> products = productRepository.findAll(pageRequest);
+
+        return products.map((product) -> mapper.map(product, ProductResponseData.class));
     }
 
     /**

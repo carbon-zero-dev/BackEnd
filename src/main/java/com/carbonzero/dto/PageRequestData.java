@@ -30,6 +30,6 @@ public class PageRequestData {
     private String sortBy = "createAt";
 
     public PageRequest convertToPageRequest() {
-        return PageRequest.of(this.getPage(), this.getSize(), Sort.Direction.DESC, sortBy.split(","));
+        return PageRequest.of(page, size, Sort.Direction.DESC, sortBy.split(","));
     }
 }
