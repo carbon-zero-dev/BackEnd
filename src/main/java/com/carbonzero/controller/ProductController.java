@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.carbonzero.domain.Product;
+import com.carbonzero.dto.PageRequestData;
 import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.service.ProductServiceImpl;
@@ -76,15 +74,10 @@ public class ProductController {
      */
     @GetMapping
     public ResponseEntity<List<ProductResponseData>> list(
-        @RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-        @RequestParam(value = "size", defaultValue = "20", required = false) Integer size,
-        @RequestParam(value = "sortby", defaultValue = "createAt", required = false) String sortBy) {
+        @Valid PageRequestData pageRequestData) {
 
-        List<Product> products = productServiceImpl.getProducts(
-            PageRequest.of(page,
-                size,
-                Sort.Direction.DESC,
-                sortBy.split(",")));
+        List<Product> products = productServiceImpl.
+            getProducts(pageRequestData.convertToPageRequest());
 
         List<ProductResponseData> response = products.stream()
             .map(product -> mapper.map(product, ProductResponseData.class))
