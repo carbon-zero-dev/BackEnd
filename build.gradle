@@ -55,6 +55,7 @@ dependencies {
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.3'
 
     // H2
+    runtimeOnly 'com.h2database:h2'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
 
     // DozerMapper
@@ -65,8 +66,8 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
 
     // Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.16'
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     // Swagger
     implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
