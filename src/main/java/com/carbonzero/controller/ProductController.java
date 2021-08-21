@@ -1,13 +1,18 @@
 package com.carbonzero.controller;
 
 
-import com.carbonzero.domain.Product;
-import com.carbonzero.dto.ProductRequestData;
-import com.carbonzero.dto.ProductResponseData;
-import com.carbonzero.dto.ProductSearchRequest;
-import com.carbonzero.service.ProductSearchService;
-import com.carbonzero.service.ProductServiceImpl;
-import com.github.dozermapper.core.Mapper;
+import java.net.URI;
+
+import javax.validation.Valid;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +27,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.carbonzero.domain.Product;
+import com.carbonzero.dto.ProductRequestData;
+import com.carbonzero.dto.ProductResponseData;
+import com.carbonzero.service.ProductServiceImpl;
+import com.github.dozermapper.core.Mapper;
 
 @RestController
 @RequestMapping("/products")
@@ -35,11 +41,14 @@ public class ProductController {
     private final Mapper mapper;
     private final ProductServiceImpl productServiceImpl;
     private final ProductSearchService productSearchService;
+    private final PagedResourcesAssembler<ProductResponseData> assembler;
 
-    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl, ProductSearchService productSearchService) {
+    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl, ProductSearchService productSearchService,
+        PagedResourcesAssembler<ProductResponseData> assembler) {
         this.mapper = mapper;
         this.productServiceImpl = productServiceImpl;
         this.productSearchService = productSearchService;
+        this.assembler = assembler;
     }
 
     /**
@@ -75,16 +84,18 @@ public class ProductController {
      * @return 상품 리스트
      */
     @GetMapping
-    public ResponseEntity<List<ProductResponseData>> list() {
-        List<Product> products = productServiceImpl.getProducts();
+    public ResponseEntity<PagedModel<EntityModel<ProductResponseData>>> list(
+        @PageableDefault(size = 20, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        List<ProductResponseData> response = products.stream()
-            .map(product -> mapper.map(product, ProductResponseData.class))
-            .collect(Collectors.toList());
+        Page<ProductResponseData> products = productServiceImpl.
+            getProducts(pageable);
+
+        // HATEOAS
+        PagedModel<EntityModel<ProductResponseData>> entityModels = assembler.toModel(products);
 
         return ResponseEntity
             .ok()
-            .body(response);
+            .body(entityModels);
     }
 
     /**
