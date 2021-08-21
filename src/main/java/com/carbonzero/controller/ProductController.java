@@ -5,6 +5,9 @@ import java.net.URI;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
@@ -23,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.carbonzero.domain.Product;
-import com.carbonzero.dto.PageRequestData;
 import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.service.ProductServiceImpl;
@@ -79,10 +81,10 @@ public class ProductController {
      */
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<ProductResponseData>>> list(
-        @Valid PageRequestData pageRequestData) {
+        @PageableDefault(size = 20, sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<ProductResponseData> products = productServiceImpl.
-            getProducts(pageRequestData.convertToPageRequest());
+            getProducts(pageable);
 
         // HATEOAS
         PagedModel<EntityModel<ProductResponseData>> entityModels = assembler.toModel(products);
