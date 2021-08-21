@@ -1,12 +1,19 @@
 package com.carbonzero.dto;
 
+import com.carbonzero.domain.Product;
+import com.github.dozermapper.core.Mapping;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import com.github.dozermapper.core.Mapping;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
+@Getter @Builder @Setter
+@NoArgsConstructor @AllArgsConstructor
 public class ProductResponseData {
 
     @Mapping("id")
@@ -17,6 +24,9 @@ public class ProductResponseData {
 
     @Mapping("updateAt")
     private LocalDateTime updateAt;
+
+    @Mapping("isActive")
+    private boolean isActive;
 
     @Mapping("name")
     private String name;
@@ -41,4 +51,20 @@ public class ProductResponseData {
 
     @Mapping("carbonEmissions")
     private Integer carbonEmissions;
+
+    public static ProductResponseData convertToProductResponseData(Product product){
+        return ProductResponseData.builder()
+                .id(product.getId())
+                .createAt(product.getCreateAt())
+                .updateAt(product.getUpdateAt())
+                .name(product.getName())
+                .brand(product.getBrand())
+                .price(product.getPrice())
+                .description(product.getDescription())
+                .imageLink(product.getImageLink())
+                .category(product.getCategory())
+                .isEcoFriendly(product.getIsEcoFriendly())
+                .carbonEmissions(product.getCarbonEmissions())
+                .build();
+    }
 }

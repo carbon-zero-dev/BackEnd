@@ -1,5 +1,6 @@
 package com.carbonzero.controller;
 
+
 import java.net.URI;
 
 import javax.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +40,14 @@ public class ProductController {
 
     private final Mapper mapper;
     private final ProductServiceImpl productServiceImpl;
+    private final ProductSearchService productSearchService;
     private final PagedResourcesAssembler<ProductResponseData> assembler;
 
-    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl,
+    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl, ProductSearchService productSearchService,
         PagedResourcesAssembler<ProductResponseData> assembler) {
         this.mapper = mapper;
         this.productServiceImpl = productServiceImpl;
+        this.productSearchService = productSearchService;
         this.assembler = assembler;
     }
 
@@ -108,6 +112,16 @@ public class ProductController {
         return ResponseEntity
             .ok()
             .body(response);
+    }
+
+    /**
+     * 상품 검색
+     * @param productSearchRequest
+     * @return
+     */
+    @PostMapping("/search")
+    public ResponseEntity<?> search(@RequestBody ProductSearchRequest productSearchRequest) {
+        return ResponseEntity.ok().body(productSearchService.search(productSearchRequest));
     }
 
     /**
