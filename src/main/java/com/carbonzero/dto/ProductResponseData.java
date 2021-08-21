@@ -14,7 +14,6 @@ import java.util.List;
 
 @Getter @Builder @Setter
 @NoArgsConstructor @AllArgsConstructor
-@Getter
 public class ProductResponseData {
 
     @Mapping("id")

@@ -1,18 +1,11 @@
 package com.carbonzero.controller;
 
 
-import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-
-import com.carbonzero.dto.ProductSearchRequest;
-import com.carbonzero.service.ProductSearchService;
-
 import com.carbonzero.domain.Product;
 import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.dto.ProductResponseData;
+import com.carbonzero.dto.ProductSearchRequest;
+import com.carbonzero.service.ProductSearchService;
 import com.carbonzero.service.ProductServiceImpl;
 import com.github.dozermapper.core.Mapper;
 import org.springframework.http.HttpHeaders;
@@ -116,8 +109,9 @@ public class ProductController {
      * @return
      */
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody ProductSearchRequest productSearchRequest){
+    public ResponseEntity<?> search(@RequestBody ProductSearchRequest productSearchRequest) {
         return ResponseEntity.ok().body(productSearchService.search(productSearchRequest));
+    }
 
     /**
      * 상품 정보를 업데이트한다.
