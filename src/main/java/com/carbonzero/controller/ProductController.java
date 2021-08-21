@@ -1,6 +1,5 @@
 package com.carbonzero.controller;
 
-
 import java.net.URI;
 
 import javax.validation.Valid;
@@ -12,7 +11,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +28,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.carbonzero.domain.Product;
 import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.dto.ProductResponseData;
+import com.carbonzero.dto.ProductSearchRequest;
+import com.carbonzero.service.ProductSearchService;
 import com.carbonzero.service.ProductServiceImpl;
 import com.github.dozermapper.core.Mapper;
 
