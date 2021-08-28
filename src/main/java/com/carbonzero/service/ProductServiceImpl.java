@@ -9,19 +9,15 @@ import com.carbonzero.domain.Product;
 import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.error.ProductNotFoundException;
 import com.carbonzero.repository.ProductRepository;
-import com.github.dozermapper.core.Mapper;
+
+import lombok.RequiredArgsConstructor;
 
 @Transactional
+@RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final Mapper mapper;
     private final ProductRepository productRepository;
-
-    public ProductServiceImpl(Mapper mapper, ProductRepository productRepository) {
-        this.mapper = mapper;
-        this.productRepository = productRepository;
-    }
 
     /**
      * 상품을 생성한다.
@@ -41,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductResponseData> getProducts(Pageable pageable) {
         Page<Product> products = productRepository.findAll(pageable);
 
-        return products.map((product) -> mapper.map(product, ProductResponseData.class));
+        return products.map((product) -> ProductResponseData.convertToProductResponseData(product));
     }
 
     /**
