@@ -150,4 +150,28 @@ public class ProductController {
                 .status(HttpStatus.NO_CONTENT)
                 .build();
     }
+
+    /**
+     * 추천 상품을 불러온다.
+     * @param id
+     * @return
+     */
+    @GetMapping("/recommend/{id}")
+    public ResponseEntity<?> recommend(@PathVariable Long id) {
+        return ResponseEntity.ok().body(productServiceImpl.recommend(id));
+    }
+
+    /**
+     * 카테고리를 모두 불러온다.
+     * @return
+     */
+    @GetMapping("/categories")
+    public ResponseEntity<?> categories() {
+        return ResponseEntity.ok().body(productServiceImpl.getCategories());
+    }
+
+    @PostMapping("/category")
+    public ResponseEntity<?> createCategory(@RequestBody CategoryRequest categoryRequest) {
+        return ResponseEntity.ok().body(productServiceImpl.createCategory(categoryRequest));
+    }
 }

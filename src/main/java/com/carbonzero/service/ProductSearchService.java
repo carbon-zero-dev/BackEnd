@@ -5,6 +5,7 @@ import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.dto.ProductSearchRequest;
 import com.carbonzero.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -49,7 +50,7 @@ public class ProductSearchService {
         // where 절
 
         // 통합 검색(상품 이름, 브랜드, 설명, 카테고리)
-        if(productSearchRequest.getSearchKeyword() != null) {
+        if(productSearchRequest.getSearchKeyword() != null && !Strings.isBlank(productSearchRequest.getSearchKeyword())) {
             predicates.add(
                     builder.or(builder.like(builder.lower(root.get("name")),"%" + productSearchRequest.getSearchKeyword().toLowerCase(Locale.ROOT) + "%"),
                             builder.like(builder.lower(root.get("brand")),"%" + productSearchRequest.getSearchKeyword().toLowerCase(Locale.ROOT) + "%"),
@@ -59,17 +60,17 @@ public class ProductSearchService {
         }
 
         // 상품명 검색
-        if(productSearchRequest.getProductName() != null) {
+        if(productSearchRequest.getProductName() != null && !Strings.isBlank(productSearchRequest.getProductName())) {
             predicates.add(builder.like(builder.lower(root.get("name")),"%" + productSearchRequest.getProductName().toLowerCase(Locale.ROOT) + "%"));
         }
 
         // 브랜드 검색
-        if(productSearchRequest.getBrand() != null) {
+        if(productSearchRequest.getBrand() != null && !Strings.isBlank(productSearchRequest.getBrand())) {
             predicates.add(builder.like(builder.lower(root.get("brand")),"%" + productSearchRequest.getBrand().toLowerCase(Locale.ROOT) + "%"));
         }
 
         // 설명 검색
-        if(productSearchRequest.getDescription() != null) {
+        if(productSearchRequest.getDescription() != null && !Strings.isBlank(productSearchRequest.getDescription())) {
             predicates.add(builder.like(builder.lower(root.get("description")),"%" + productSearchRequest.getDescription().toLowerCase(Locale.ROOT) + "%"));
         }
 
