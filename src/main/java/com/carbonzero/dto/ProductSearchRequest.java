@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class ProductSearchRequest {
 
     private String searchKeyword;
-    private String category;
+    private Long categoryId;
     private String productName;
     private Long priceFrom = 0L;
     private Long priceTo = Long.MAX_VALUE;

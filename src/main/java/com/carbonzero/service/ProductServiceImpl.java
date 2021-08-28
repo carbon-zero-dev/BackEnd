@@ -1,7 +1,13 @@
 package com.carbonzero.service;
 
+import com.carbonzero.dto.CategoryRequest;
+import com.carbonzero.domain.Category;
+import com.carbonzero.dto.CategoryResponseData;
+import com.carbonzero.error.CategoryNotFoundException;
+import com.carbonzero.repository.CategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,16 +18,24 @@ import com.carbonzero.error.ProductNotFoundException;
 import com.carbonzero.repository.ProductRepository;
 import com.github.dozermapper.core.Mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.carbonzero.dto.CategoryResponseData.convertToCategoryResponseData;
+
 @Transactional
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final Mapper mapper;
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ProductServiceImpl(Mapper mapper, ProductRepository productRepository) {
+    public ProductServiceImpl(Mapper mapper, ProductRepository productRepository,CategoryRepository categoryRepository) {
         this.mapper = mapper;
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     /**
@@ -87,5 +101,45 @@ public class ProductServiceImpl implements ProductService {
     public Product findProduct(Long id) {
         return productRepository.findById(id)
             .orElseThrow(() -> new ProductNotFoundException(id));
+    }
+
+    public List<ProductResponseData> recommend(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ProductNotFoundException(id));
+
+        Category category = categoryRepository.findByIdAndIsActive(product.getCategory().getId(), true).orElseThrow(
+                () -> new CategoryNotFoundException(product.getCategory().getId()));
+
+
+        List<Product> productList = productRepository.findTop5ByIsActiveAndCategoryIdAndIsEcoFriendlyOrderByCarbonEmissionsAsc(true, category.getId(), true);
+
+        return productList.stream().map(ProductResponseData::convertToProductResponseData).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryResponseData> getCategories() {
+        List<Category> categories = categoryRepository.findAllByIsActive(true);
+        List<Category> list = categories.stream().filter(category -> category.getParentCategory() == null)
+                .collect(Collectors.toList());
+        return list.stream().map(CategoryResponseData::convertToCategoryResponseData).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public CategoryResponseData createCategory(CategoryRequest categoryRequest){
+        Category parent = null;
+        if(categoryRequest.getParentId() != null){
+            parent = categoryRepository.findById(categoryRequest.getParentId()).orElseThrow();
+        }
+
+        Category category = categoryRepository.save(Category.builder()
+                .isActive(true)
+                .name(categoryRequest.getName())
+                .parentCategory(parent)
+                .subCategoryList(new ArrayList<>())
+                .build());
+
+        if(parent != null) parent.getSubCategoryList().add(category);
+
+        return convertToCategoryResponseData(category);
     }
 }

@@ -30,9 +30,8 @@ public class ProductRequestData {
     @Mapping("imageLink")
     private List<String> imageLink;
 
-    @NotBlank
-    @Mapping("category")
-    private String category;
+    @Mapping("categoryId")
+    private Long categoryId;
 
     @Mapping("isEcoFriendly")
     private Boolean isEcoFriendly;

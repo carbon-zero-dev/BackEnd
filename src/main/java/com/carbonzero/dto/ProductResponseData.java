@@ -62,7 +62,7 @@ public class ProductResponseData {
                 .price(product.getPrice())
                 .description(product.getDescription())
                 .imageLink(product.getImageLink())
-                .category(product.getCategory())
+                .category(product.getCategory().getName())
                 .isEcoFriendly(product.getIsEcoFriendly())
                 .carbonEmissions(product.getCarbonEmissions())
                 .build();
