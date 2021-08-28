@@ -25,31 +25,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.carbonzero.domain.Category;
 import com.carbonzero.domain.Product;
 import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.dto.ProductSearchRequest;
+import com.carbonzero.service.CategoryService;
 import com.carbonzero.service.ProductSearchService;
 import com.carbonzero.service.ProductServiceImpl;
 import com.github.dozermapper.core.Mapper;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/products")
+@RequiredArgsConstructor
 @CrossOrigin
 public class ProductController {
 
     private final Mapper mapper;
     private final ProductServiceImpl productServiceImpl;
     private final ProductSearchService productSearchService;
+    private final CategoryService categoryService;
     private final PagedResourcesAssembler<ProductResponseData> assembler;
-
-    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl, ProductSearchService productSearchService,
-        PagedResourcesAssembler<ProductResponseData> assembler) {
-        this.mapper = mapper;
-        this.productServiceImpl = productServiceImpl;
-        this.productSearchService = productSearchService;
-        this.assembler = assembler;
-    }
 
     /**
      * 상품 생성을 요청한다.
@@ -60,6 +58,9 @@ public class ProductController {
     public ResponseEntity<ProductResponseData> create(@RequestBody @Valid ProductRequestData productRequestData) {
 
         Product product = mapper.map(productRequestData, Product.class);
+        Category category = categoryService.getCategory(productRequestData.getCategoryId());
+
+        product.setCategory(category);
 
         Product createdProduct = productServiceImpl.createProduct(product);
 
@@ -72,11 +73,9 @@ public class ProductController {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(location);
 
-        ProductResponseData response = mapper.map(createdProduct, ProductResponseData.class);
-
         return ResponseEntity
             .created(location)
-            .body(response);
+            .body(ProductResponseData.convertToProductResponseData(createdProduct));
     }
 
     /**
@@ -107,11 +106,9 @@ public class ProductController {
     public ResponseEntity<ProductResponseData> detail(@PathVariable Long id) {
         Product product = productServiceImpl.getProduct(id);
 
-        ProductResponseData response = mapper.map(product, ProductResponseData.class);
-
         return ResponseEntity
             .ok()
-            .body(response);
+            .body(ProductResponseData.convertToProductResponseData(product));
     }
 
     /**
