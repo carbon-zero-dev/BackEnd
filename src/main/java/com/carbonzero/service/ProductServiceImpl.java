@@ -1,28 +1,27 @@
 package com.carbonzero.service;
 
-import com.carbonzero.dto.CategoryRequest;
-import com.carbonzero.domain.Category;
-import com.carbonzero.dto.CategoryResponseData;
-import com.carbonzero.error.CategoryNotFoundException;
-import com.carbonzero.repository.CategoryRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.expression.ExpressionException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.carbonzero.domain.Product;
-import com.carbonzero.dto.ProductRequestData;
-import com.carbonzero.dto.ProductResponseData;
-import com.carbonzero.error.ProductNotFoundException;
-import com.carbonzero.repository.ProductRepository;
-import com.github.dozermapper.core.Mapper;
+import static com.carbonzero.dto.CategoryResponseData.convertToCategoryResponseData;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.carbonzero.dto.CategoryResponseData.convertToCategoryResponseData;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.carbonzero.domain.Category;
+import com.carbonzero.domain.Product;
+import com.carbonzero.dto.CategoryRequest;
+import com.carbonzero.dto.CategoryResponseData;
+import com.carbonzero.dto.ProductRequestData;
+import com.carbonzero.dto.ProductResponseData;
+import com.carbonzero.error.CategoryNotFoundException;
+import com.carbonzero.error.ProductNotFoundException;
+import com.carbonzero.repository.CategoryRepository;
+import com.carbonzero.repository.ProductRepository;
+import com.github.dozermapper.core.Mapper;
 
 @Transactional
 @Service

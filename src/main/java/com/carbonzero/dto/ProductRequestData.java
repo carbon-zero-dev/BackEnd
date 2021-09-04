@@ -1,5 +1,6 @@
 package com.carbonzero.dto;
 
+import java.util.List;
 import com.github.dozermapper.core.Mapping;
 
 import lombok.Builder;
@@ -7,7 +8,10 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+
+import com.github.dozermapper.core.Mapping;
+
+import lombok.Getter;
 
 @Getter
 @Builder

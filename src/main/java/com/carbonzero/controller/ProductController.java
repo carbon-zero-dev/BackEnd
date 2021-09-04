@@ -5,9 +5,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import com.carbonzero.domain.Category;
-import com.carbonzero.dto.CategoryRequest;
-import com.carbonzero.repository.CategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,10 +26,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.carbonzero.domain.Category;
 import com.carbonzero.domain.Product;
+import com.carbonzero.dto.CategoryRequest;
 import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.dto.ProductSearchRequest;
+import com.carbonzero.repository.CategoryRepository;
 import com.carbonzero.service.ProductSearchService;
 import com.carbonzero.service.ProductServiceImpl;
 import com.github.dozermapper.core.Mapper;
