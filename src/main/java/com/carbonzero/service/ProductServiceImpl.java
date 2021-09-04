@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.carbonzero.domain.Product;
+import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.error.ProductNotFoundException;
 import com.carbonzero.repository.ProductRepository;
@@ -60,10 +61,11 @@ public class ProductServiceImpl implements ProductService {
      * @return int
      */
     @Override
-    public Product updateProduct(Long id, Product source) {
-        Product selectedProduct = findProduct(id);
-        selectedProduct.changeWith(source);
-        return selectedProduct;
+    public Product updateProduct(Long id, ProductRequestData productRequestData) {
+        Product updatedProduct = mapper.map(productRequestData, Product.class);
+        Product originalProduct = findProduct(id);
+        originalProduct.changeWith(updatedProduct);
+        return originalProduct;
     }
 
     /**
@@ -71,9 +73,10 @@ public class ProductServiceImpl implements ProductService {
      * @param id 삭제할 상품의 아이디
      */
     @Override
-    public void deleteProduct(Long id) {
+    public Product deleteProduct(Long id) {
         Product product = findProduct(id);
         productRepository.delete(product);
+        return product;
     }
 
     /**
