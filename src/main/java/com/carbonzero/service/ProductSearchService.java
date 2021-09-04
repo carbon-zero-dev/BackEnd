@@ -1,16 +1,9 @@
 package com.carbonzero.service;
 
-import com.carbonzero.domain.Product;
-import com.carbonzero.dto.ProductResponseData;
-import com.carbonzero.dto.ProductSearchRequest;
-import com.carbonzero.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,10 +12,21 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.carbonzero.domain.Product;
+import com.carbonzero.dto.ProductResponseData;
+import com.carbonzero.dto.ProductSearchRequest;
+import com.carbonzero.repository.ProductRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -49,34 +53,34 @@ public class ProductSearchService {
         // where 절
 
         // 통합 검색(상품 이름, 브랜드, 설명, 카테고리)
-        if(productSearchRequest.getSearchKeyword() != null) {
+        if(productSearchRequest.getSearchKeyword() != null && !Strings.isBlank(productSearchRequest.getSearchKeyword())) {
             predicates.add(
                     builder.or(builder.like(builder.lower(root.get("name")),"%" + productSearchRequest.getSearchKeyword().toLowerCase(Locale.ROOT) + "%"),
                             builder.like(builder.lower(root.get("brand")),"%" + productSearchRequest.getSearchKeyword().toLowerCase(Locale.ROOT) + "%"),
-                            builder.like(builder.lower(root.get("description")),"%" + productSearchRequest.getSearchKeyword().toLowerCase(Locale.ROOT) + "%"),
-                            builder.like(builder.lower(root.get("category")),"%" + productSearchRequest.getSearchKeyword().toLowerCase(Locale.ROOT) + "%"))
-            );
+                            builder.like(builder.lower(root.get("description")),"%" + productSearchRequest.getSearchKeyword().toLowerCase(Locale.ROOT) + "%")
+//                            , builder.equal(root.get("category_id").as(Long.class),productSearchRequest.getCategoryId())
+            ));
         }
 
         // 상품명 검색
-        if(productSearchRequest.getProductName() != null) {
+        if(productSearchRequest.getProductName() != null && !Strings.isBlank(productSearchRequest.getProductName())) {
             predicates.add(builder.like(builder.lower(root.get("name")),"%" + productSearchRequest.getProductName().toLowerCase(Locale.ROOT) + "%"));
         }
 
         // 브랜드 검색
-        if(productSearchRequest.getBrand() != null) {
+        if(productSearchRequest.getBrand() != null && !Strings.isBlank(productSearchRequest.getBrand())) {
             predicates.add(builder.like(builder.lower(root.get("brand")),"%" + productSearchRequest.getBrand().toLowerCase(Locale.ROOT) + "%"));
         }
 
         // 설명 검색
-        if(productSearchRequest.getDescription() != null) {
+        if(productSearchRequest.getDescription() != null && !Strings.isBlank(productSearchRequest.getDescription())) {
             predicates.add(builder.like(builder.lower(root.get("description")),"%" + productSearchRequest.getDescription().toLowerCase(Locale.ROOT) + "%"));
         }
 
         // 카테고리 검색(추후에 enum으로 관리)
-        if(productSearchRequest.getCategory() != null) {
-            predicates.add(builder.like(builder.lower(root.get("category")),"%" + productSearchRequest.getCategory().toLowerCase(Locale.ROOT) + "%"));
-        }
+//        if(productSearchRequest.getCategoryId() != null) {
+//            predicates.add(builder.equal(root.get("category_id").as(Long.class),productSearchRequest.getCategoryId()));
+//        }
 
         // 가격 검색(하한, 상한 설정)
         if(productSearchRequest.getPriceTo() != null || productSearchRequest.getPriceFrom() != null) {

@@ -1,6 +1,7 @@
 package com.carbonzero.controller;
 
 import java.net.URI;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -25,10 +26,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.carbonzero.domain.Category;
 import com.carbonzero.domain.Product;
+import com.carbonzero.dto.CategoryRequest;
 import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.dto.ProductSearchRequest;
+import com.carbonzero.repository.CategoryRepository;
 import com.carbonzero.service.ProductSearchService;
 import com.carbonzero.service.ProductServiceImpl;
 import com.github.dozermapper.core.Mapper;
@@ -42,13 +46,15 @@ public class ProductController {
     private final ProductServiceImpl productServiceImpl;
     private final ProductSearchService productSearchService;
     private final PagedResourcesAssembler<ProductResponseData> assembler;
+    private final CategoryRepository categoryRepository;
 
     public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl, ProductSearchService productSearchService,
-        PagedResourcesAssembler<ProductResponseData> assembler) {
+        PagedResourcesAssembler<ProductResponseData> assembler,CategoryRepository categoryRepository) {
         this.mapper = mapper;
         this.productServiceImpl = productServiceImpl;
         this.productSearchService = productSearchService;
         this.assembler = assembler;
+        this.categoryRepository = categoryRepository;
     }
 
     /**
@@ -58,10 +64,25 @@ public class ProductController {
      */
     @PostMapping
     public ResponseEntity<ProductResponseData> create(@RequestBody @Valid ProductRequestData productRequestData) {
+        Category category = null;
+        Optional<Category> optional = categoryRepository.findByIdAndIsActive(productRequestData.getCategoryId(), true);
+        if(optional.isPresent()){
+            category = optional.get();
+        }
 
-        Product product = mapper.map(productRequestData, Product.class);
-
-        Product createdProduct = productServiceImpl.createProduct(product);
+        Product createdProduct = productServiceImpl.createProduct(
+                Product.builder()
+                .brand(productRequestData.getBrand())
+                .carbonEmissions(productRequestData.getCarbonEmissions())
+                .description(productRequestData.getDescription())
+                .imageLink(productRequestData.getImageLink())
+                .name(productRequestData.getName())
+                .price(productRequestData.getPrice())
+                .isEcoFriendly(productRequestData.getIsEcoFriendly())
+                .isActive(true)
+                .category(category)
+                .build()
+        );
 
         URI location = ServletUriComponentsBuilder
             .fromCurrentRequest()
@@ -150,5 +171,34 @@ public class ProductController {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
+    }
+
+    /**
+     * 추천 상품을 불러온다.
+     * @param id
+     * @return
+     */
+    @GetMapping("/recommend/{id}")
+    public ResponseEntity<?> recommend(@PathVariable Long id) {
+        return ResponseEntity.ok().body(productServiceImpl.recommend(id));
+    }
+
+    /**
+     * 카테고리를 모두 불러온다.
+     * @return
+     */
+    @GetMapping("/categories")
+    public ResponseEntity<?> categories() {
+        return ResponseEntity.ok().body(productServiceImpl.getCategories());
+    }
+
+    /**
+     * 카테고리를 생성한다.
+     * @param categoryRequest
+     * @return
+     */
+    @PostMapping("/category")
+    public ResponseEntity<?> createCategory(@RequestBody CategoryRequest categoryRequest) {
+        return ResponseEntity.ok().body(productServiceImpl.createCategory(categoryRequest));
     }
 }
