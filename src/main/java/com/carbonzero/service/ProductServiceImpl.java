@@ -30,11 +30,14 @@ public class ProductServiceImpl implements ProductService {
     private final Mapper mapper;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
-    public ProductServiceImpl(Mapper mapper, ProductRepository productRepository,CategoryRepository categoryRepository) {
+    public ProductServiceImpl(Mapper mapper, ProductRepository productRepository, CategoryRepository categoryRepository,
+        CategoryService categoryService) {
         this.mapper = mapper;
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
     }
 
     /**
@@ -43,7 +46,24 @@ public class ProductServiceImpl implements ProductService {
      * @return 생성된 상품
      */
     @Override
-    public Product createProduct(Product product) {
+    public Product createProduct(ProductRequestData productRequestData) {
+
+        // get category
+        Long categoryId = productRequestData.getCategoryId();
+        Category category = categoryService.getCategory(categoryId);
+
+        Product product = Product.builder()
+            .brand(productRequestData.getBrand())
+            .carbonEmissions(productRequestData.getCarbonEmissions())
+            .description(productRequestData.getDescription())
+            .imageLink(productRequestData.getImageLink())
+            .name(productRequestData.getName())
+            .price(productRequestData.getPrice())
+            .isEcoFriendly(productRequestData.getIsEcoFriendly())
+            .isActive(true)
+            .category(category)
+            .build();
+
         return productRepository.save(product);
     }
 
@@ -75,7 +95,22 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Product updateProduct(Long id, ProductRequestData productRequestData) {
-        Product updatedProduct = mapper.map(productRequestData, Product.class);
+
+        Long categoryId = productRequestData.getCategoryId();
+
+        Category category = categoryService.getCategory(categoryId);
+
+        Product updatedProduct = Product.builder()
+            .name(productRequestData.getName())
+            .brand(productRequestData.getBrand())
+            .price(productRequestData.getPrice())
+            .description(productRequestData.getDescription())
+            .imageLink(productRequestData.getImageLink())
+            .category(category)
+            .isEcoFriendly(productRequestData.getIsEcoFriendly())
+            .carbonEmissions(productRequestData.getCarbonEmissions())
+            .build();
+
         Product originalProduct = findProduct(id);
         originalProduct.changeWith(updatedProduct);
         return originalProduct;

@@ -1,7 +1,6 @@
 package com.carbonzero.controller;
 
 import java.net.URI;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -26,13 +25,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.carbonzero.domain.Category;
 import com.carbonzero.domain.Product;
 import com.carbonzero.dto.CategoryRequest;
 import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.dto.ProductSearchRequest;
-import com.carbonzero.repository.CategoryRepository;
 import com.carbonzero.service.ProductSearchService;
 import com.carbonzero.service.ProductServiceImpl;
 import com.github.dozermapper.core.Mapper;
@@ -46,15 +43,13 @@ public class ProductController {
     private final ProductServiceImpl productServiceImpl;
     private final ProductSearchService productSearchService;
     private final PagedResourcesAssembler<ProductResponseData> assembler;
-    private final CategoryRepository categoryRepository;
 
-    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl, ProductSearchService productSearchService,
-        PagedResourcesAssembler<ProductResponseData> assembler,CategoryRepository categoryRepository) {
+    public ProductController(Mapper mapper, ProductServiceImpl productServiceImpl,
+        ProductSearchService productSearchService, PagedResourcesAssembler<ProductResponseData> assembler) {
         this.mapper = mapper;
         this.productServiceImpl = productServiceImpl;
         this.productSearchService = productSearchService;
         this.assembler = assembler;
-        this.categoryRepository = categoryRepository;
     }
 
     /**
@@ -64,25 +59,8 @@ public class ProductController {
      */
     @PostMapping
     public ResponseEntity<ProductResponseData> create(@RequestBody @Valid ProductRequestData productRequestData) {
-        Category category = null;
-        Optional<Category> optional = categoryRepository.findByIdAndIsActive(productRequestData.getCategoryId(), true);
-        if(optional.isPresent()){
-            category = optional.get();
-        }
 
-        Product createdProduct = productServiceImpl.createProduct(
-                Product.builder()
-                .brand(productRequestData.getBrand())
-                .carbonEmissions(productRequestData.getCarbonEmissions())
-                .description(productRequestData.getDescription())
-                .imageLink(productRequestData.getImageLink())
-                .name(productRequestData.getName())
-                .price(productRequestData.getPrice())
-                .isEcoFriendly(productRequestData.getIsEcoFriendly())
-                .isActive(true)
-                .category(category)
-                .build()
-        );
+        Product createdProduct = productServiceImpl.createProduct(productRequestData);
 
         URI location = ServletUriComponentsBuilder
             .fromCurrentRequest()
@@ -153,11 +131,12 @@ public class ProductController {
      * @return 업데이트 결과
      */
     @PatchMapping("{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody @Valid ProductRequestData productRequestData) {
+    public ResponseEntity<ProductResponseData> update(@PathVariable Long id, @RequestBody @Valid ProductRequestData productRequestData) {
         Product updatedProduct = productServiceImpl.updateProduct(id, productRequestData);
+
         return ResponseEntity
                 .ok()
-                .body(updatedProduct);
+                .body(ProductResponseData.convertToProductResponseData(updatedProduct));
     }
 
     /**
