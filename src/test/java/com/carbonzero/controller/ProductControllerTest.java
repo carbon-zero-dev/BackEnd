@@ -26,11 +26,13 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.carbonzero.domain.Category;
 import com.carbonzero.domain.Product;
 import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.dto.ProductResponseData;
 import com.carbonzero.dto.ProductSearchRequest;
 import com.carbonzero.error.ProductNotFoundException;
+import com.carbonzero.service.CategoryService;
 import com.carbonzero.service.ProductSearchService;
 import com.carbonzero.service.ProductServiceImpl;
 
@@ -46,15 +48,27 @@ class ProductControllerTest {
     private ProductServiceImpl productService;
 
     @MockBean
+    private CategoryService categoryService;
+
+    @MockBean
     private ProductSearchService productSearchService;
 
     @BeforeEach
     void setUp() {
+
+        Category category = Category.builder()
+            .id(1L)
+            .name("샴푸")
+            .isActive(true)
+            .parentCategory(null)
+            .subCategoryList(null)
+            .build();
+
         Product product = Product.builder()
             .id(1L)
             .name("헤드앤숄더 시트러스 레몬 샴푸")
             .brand("P&G")
-            .category("샴푸")
+            .category(category)
             .description("미세 클렌징 성분으로 과도한 두피 유분을 제거하는 샴푸입니다.")
             .price(17500L)
             .isActive(true)
@@ -62,8 +76,7 @@ class ProductControllerTest {
             .carbonEmissions(100)
             .build();
 
-
-        given(productService.createProduct(any(Product.class))).willReturn(product);
+        given(productService.createProduct(any(ProductRequestData.class))).willReturn(product);
 
         ProductResponseData responseData = ProductResponseData.convertToProductResponseData(product);
         given(productService.getProducts(any(Pageable.class))).willReturn(new PageImpl<>(List.of(responseData)));
@@ -84,8 +97,8 @@ class ProductControllerTest {
                     .id(id)
                     .name(productRequestData.getName())
                     .brand(productRequestData.getBrand())
-                    .category(productRequestData.getCategory())
                     .price(productRequestData.getPrice())
+                    .category(category)
                     .isActive(true)
                     .imageLink(productRequestData.getImageLink())
                     .description(productRequestData.getDescription())
@@ -109,7 +122,7 @@ class ProductControllerTest {
             .content("{"
                 + "  \"brand\": \"P&G\",\n"
                 + "  \"carbon_emissions\": 100,\n"
-                + "  \"category\": \"샴푸\",\n"
+                + "  \"category\": 1,\n"
                 + "  \"description\": \"미세 클렌징 성분으로 과도한 두피 유분을 제거하는 샴푸입니다.\",\n"
                 + "  \"image_link\": [\n"
                 + "    \"string\"\n"
@@ -123,7 +136,7 @@ class ProductControllerTest {
             .andExpect(content().string(
                 containsString("\"brand\":\"P&G\"")
             ));
-        verify(productService).createProduct(any(Product.class));
+        verify(productService).createProduct(any(ProductRequestData.class));
     }
 
     @DisplayName("유효하지 않은 형식으로 상품 생성을 요청하면, 상태 코드 400을 반환한다.")
@@ -136,7 +149,7 @@ class ProductControllerTest {
                 .content("{\n"
                     + "  \"brand\": \"P&G\",\n"
                     + "  \"carbon_emissions\": 100,\n"
-                    + "  \"category\": \"샴푸\",\n"
+                    + "  \"category\": 1,\n"
                     + "  \"description\": \"미세 클렌징 성분으로 과도한 두피 유분을 제거하는 샴푸입니다.\",\n"
                     + "  \"image_link\": [\n"
                     + "    \"string\"\n"
@@ -219,9 +232,9 @@ class ProductControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\n"
-                    + "  \"brand\": \"피존\",\n"
-                    + "  \"carbon_emissions\": 100,\n"
-                    + "  \"category\": \"string\",\n"
+                    + "  \"brand\": \"string\",\n"
+                    + "  \"carbon_emissions\": 0,\n"
+                    + "  \"category_id\": 1,\n"
                     + "  \"description\": \"string\",\n"
                     + "  \"image_link\": [\n"
                     + "    \"string\"\n"

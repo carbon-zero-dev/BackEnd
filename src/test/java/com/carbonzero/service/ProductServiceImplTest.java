@@ -14,9 +14,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.carbonzero.domain.Category;
 import com.carbonzero.domain.Product;
 import com.carbonzero.dto.ProductRequestData;
 import com.carbonzero.error.ProductNotFoundException;
+import com.carbonzero.repository.CategoryRepository;
 import com.carbonzero.repository.ProductRepository;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
@@ -27,18 +29,28 @@ class ProductServiceImplTest {
     private ProductServiceImpl productService;
 
     private final ProductRepository productRepository = mock(ProductRepository.class);
+    private final CategoryRepository categoryRepository = mock(CategoryRepository.class);
+    private final CategoryService categoryService = mock(CategoryService.class);
 
     @BeforeEach
     void setUp() {
         Mapper mapper = DozerBeanMapperBuilder.buildDefault();
 
-        productService = new ProductServiceImpl(mapper, productRepository);
+        productService = new ProductServiceImpl(mapper, productRepository, categoryRepository, categoryService);
+
+        Category category = Category.builder()
+            .id(1L)
+            .name("샴푸")
+            .isActive(true)
+            .parentCategory(null)
+            .subCategoryList(null)
+            .build();
 
         Product product = Product.builder()
             .id(1L)
             .name("헤드앤숄더 시트러스 레몬 샴푸")
             .brand("P&G")
-            .category("샴푸")
+            .category(category)
             .description("미세 클렌징 성분으로 과도한 두피 유분을 제거하는 샴푸입니다.")
             .price(17500L)
             .isActive(true)
@@ -87,19 +99,16 @@ class ProductServiceImplTest {
     @Test
     void createProduct() {
 
-        Product product = Product.builder()
-            .id(2L)
+        ProductRequestData productRequestData = ProductRequestData.builder()
             .name("헤드앤숄더 시트러스 레몬 샴푸")
             .brand("P&G")
-            .category("샴푸")
             .description("미세 클렌징 성분으로 과도한 두피 유분을 제거하는 샴푸입니다.")
             .price(17500L)
-            .isActive(true)
             .isEcoFriendly(true)
             .carbonEmissions(100)
             .build();
 
-        Product createdProduct = productService.createProduct(product);
+        Product createdProduct = productService.createProduct(productRequestData);
 
         verify(productRepository).save(any(Product.class));
 
@@ -110,11 +119,19 @@ class ProductServiceImplTest {
     @DisplayName("존재하는 상품 아이디로, 업데이트를 하면 상품 정보가 갱신된다.")
     @Test
     void updateProductWithExistedId() {
+        Category category = Category.builder()
+            .id(1L)
+            .name("샴푸")
+            .isActive(true)
+            .parentCategory(null)
+            .subCategoryList(null)
+            .build();
+
         ProductRequestData productData = ProductRequestData.builder()
             .name("케라시스 샴푸")
             .brand("AK")
-            .category("샴푸")
             .description("좋은 샴푸입니다.")
+            .categoryId(category.getId())
             .price(3000L)
             .isEcoFriendly(true)
             .carbonEmissions(150)
@@ -133,7 +150,7 @@ class ProductServiceImplTest {
         ProductRequestData productRequestData = ProductRequestData.builder()
             .name("케라시스 샴푸")
             .brand("AK")
-            .category("샴푸")
+            .categoryId(1L)
             .description("좋은 샴푸입니다.")
             .price(3000L)
             .isEcoFriendly(true)
