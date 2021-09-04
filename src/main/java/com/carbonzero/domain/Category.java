@@ -43,5 +43,4 @@ public class Category extends BaseTime{
 
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> subCategoryList;
-
 }

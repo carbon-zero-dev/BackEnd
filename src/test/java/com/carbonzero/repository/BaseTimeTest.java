@@ -31,7 +31,6 @@ public class BaseTimeTest {
             .id(1L)
             .name("헤드앤숄더 시트러스 레몬 샴푸")
             .brand("P&G")
-            .category("샴푸")
             .description("미세 클렌징 성분으로 과도한 두피 유분을 제거하는 샴푸입니다.")
             .price(17500L)
             .isActive(true)
