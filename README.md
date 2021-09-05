@@ -27,6 +27,14 @@
 docker run -it -e MYSQL_USER=mysql -e MYSQL_ROOT_PASSWORD=pass -e MYSQL_DATABASE=dev -p 3306:3306 mariadb:10.3.8
 ```
 
+### 도커 컴포즈
+
+- `application.yaml` 파일의 `profile` 항목의 `active`를 `test`로 설정하고 나서 `docker-compose build`를 터미널에 입력한다.
+
+- 빌드가 완료되고 나서, `docker-compose up`을 하면 로컬에서 서버를 띄울 수 있다.
+
+- 종료할 때는 `docker-compose down`을 입력한다.
+
 ### 기여
 
 기여는 언제든지 환영합니다.

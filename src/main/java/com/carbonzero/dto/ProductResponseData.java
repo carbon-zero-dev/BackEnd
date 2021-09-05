@@ -1,16 +1,16 @@
 package com.carbonzero.dto;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import com.carbonzero.domain.Product;
 import com.github.dozermapper.core.Mapping;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import com.github.dozermapper.core.Mapping;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter @Builder @Setter
 @NoArgsConstructor @AllArgsConstructor
@@ -62,7 +62,7 @@ public class ProductResponseData {
                 .price(product.getPrice())
                 .description(product.getDescription())
                 .imageLink(product.getImageLink())
-                .category(product.getCategory())
+                .category(product.getCategory().getName())
                 .isEcoFriendly(product.getIsEcoFriendly())
                 .carbonEmissions(product.getCarbonEmissions())
                 .build();
