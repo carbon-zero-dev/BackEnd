@@ -9,10 +9,9 @@ spring:
     hikari:
       maximum-pool-size: 10
       connection-timeout: 30000
-      connection-init-sql: SET GLOBAL time_zone = 'Asia/Seoul';
-    url: jdbc:mariadb://localhost:3306/dev
-    username: root
-    password: pass
+    jdbc-url: jdbc:mariadb://carbon-zero-dev.cdspom5j0apx.ap-northeast-2.rds.amazonaws.com:3306/carbon-zero-dev
+    username: carbon_zero_dev
+    password: carbon_zero_dev
 
   jpa:
     hibernate:
