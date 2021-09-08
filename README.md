@@ -3,6 +3,13 @@
 우리가 평소 사용하는 제품들의 탄소 배출량을 조회할 수 있어 자신이 사용하는 제품들이 환경에 대해서 영향을 미치는지 확인할 수 있으며
 또한 대체할 수 있는 친환경 제품들을 추천하여 환경보호에 도움이 되는 방향으로 제품을 구매 및 대체할 수 있도록 유도하는 애플리케이션 입니다.
 
+<p align='center'>
+    <img src="https://img.shields.io/badge/spring boot-v2.3.5-green?logo=SpringBoot"/>
+    <img src="https://img.shields.io/badge/java-v11-ab?logo=Java"/>
+    <img src="https://img.shields.io/badge/MariaDB-v10.6.4-ff69b4?logo=MariaDB"/>
+    <img src="https://img.shields.io/badge/github actions-v1-abcdef?logo=GitHub Actions"/>
+</p>
+
 ### 문서
 
 ![Screen Shot 2021-08-11 at 5 28 35 PM](https://user-images.githubusercontent.com/14002238/128996327-fcb5e218-ada7-4de5-b25f-d1907a0787c1.png)
