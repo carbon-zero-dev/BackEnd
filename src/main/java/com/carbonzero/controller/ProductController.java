@@ -106,7 +106,7 @@ public class ProductController {
     public ResponseEntity<ProductResponseData> detail(@PathVariable Long id) {
         Product product = productServiceImpl.getProduct(id);
 
-        ProductResponseData response = mapper.map(product, ProductResponseData.class);
+        ProductResponseData response = ProductResponseData.convertToProductResponseData(product);
 
         return ResponseEntity
             .ok()

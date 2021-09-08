@@ -75,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductResponseData> getProducts(Pageable pageable) {
         Page<Product> products = productRepository.findAll(pageable);
 
-        return products.map((product) -> mapper.map(product, ProductResponseData.class));
+        return products.map((product) -> ProductResponseData.convertToProductResponseData(product));
     }
 
     /**
