@@ -1,13 +1,17 @@
 package com.carbonzero.dto;
 
-import com.github.dozermapper.core.Mapping;
-import lombok.Getter;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+
+import com.github.dozermapper.core.Mapping;
+
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
+@Builder
 public class ProductRequestData {
     @NotBlank
     @Mapping("name")
@@ -27,9 +31,8 @@ public class ProductRequestData {
     @Mapping("imageLink")
     private List<String> imageLink;
 
-    @NotBlank
-    @Mapping("category")
-    private String category;
+    @Mapping("categoryId")
+    private Long categoryId;
 
     @Mapping("isEcoFriendly")
     private Boolean isEcoFriendly;
