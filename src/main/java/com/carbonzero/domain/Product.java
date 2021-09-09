@@ -42,6 +42,7 @@ public class Product extends BaseTime {
     private Boolean isActive = true;
 
     @ElementCollection
+    @Column(length = 1000)
     private List<String> imageLink;
 
     @OneToOne
