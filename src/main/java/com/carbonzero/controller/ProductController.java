@@ -13,6 +13,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,7 +58,7 @@ public class ProductController {
      * @param productRequestData
      * @return 생성된 상품 정보
      */
-    @PostMapping
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE })
     public ResponseEntity<ProductResponseData> create(@RequestBody @Valid ProductRequestData productRequestData) {
 
         Product createdProduct = productServiceImpl.createProduct(productRequestData);
