@@ -51,8 +51,6 @@ public class Product extends BaseTime {
 
     private Integer carbonEmissions;
 
-    private Long categoryId;
-
     public void changeWith(Product source) {
         this.name = source.name;
         this.brand = source.brand;
